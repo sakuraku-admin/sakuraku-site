@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", sans-serif;
+}
+
+/* さくらっぽい背景を薄く */
+.sakura-bg {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(251, 113, 133, 0.10) 0, rgba(251, 113, 133, 0.00) 55%),
+    radial-gradient(circle at 70% 20%, rgba(16, 185, 129, 0.10) 0, rgba(16, 185, 129, 0.00) 55%),
+    radial-gradient(circle at 60% 80%, rgba(251, 146, 60, 0.10) 0, rgba(251, 146, 60, 0.00) 55%);
+}
+
+/* うっすら桜模様（外部URLに依存しない簡易パターン） */
+.sakura-pattern {
+  background-image:
+    radial-gradient(circle at 10px 10px, rgba(244, 114, 182, 0.10) 2px, transparent 3px),
+    radial-gradient(circle at 30px 30px, rgba(244, 114, 182, 0.08) 2px, transparent 3px);
+  background-size: 48px 48px;
+  background-position: 0 0, 24px 24px;
+}
