@@ -11,8 +11,10 @@ import {
   User,
 } from "firebase/auth";
 import { auth } from "@/components/firebase";
+import { db } from "@/components/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-// NOTE: 筆風フォントは後でGoogle Fontsで追加できます（今は雰囲気のため class 名だけ用意）
+: 筆風フォントは後でGoogle Fontsで追加できます（今は雰囲気のため class 名だけ用意）
 const brushFontClass = "font-serif";
 
 type TabKey = "reserve" | "members" | "admin";
@@ -37,6 +39,7 @@ export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Admin (簡易)
   const [adminPassword, setAdminPassword] = useState("");
@@ -53,9 +56,21 @@ export default function Page() {
   const [tab, setTab] = useState<TabKey>("reserve");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsub();
-  }, []);
+  const unsub = onAuthStateChanged(auth, async (u) => {
+    setUser(u);
+
+    if (!u) {
+      setIsAdmin(false);
+      return;
+    }
+
+    const adminRef = doc(db, "admins", u.uid);
+    const adminSnap = await getDoc(adminRef);
+    setIsAdmin(adminSnap.exists());
+  });
+
+  return () => unsub();
+}, []);
 
   const timeSlots = useMemo(() => ["10:00", "13:00", "15:00"], []);
   const menus = useMemo(
@@ -138,7 +153,15 @@ export default function Page() {
           <div className="grid grid-cols-3 gap-2">
             <TabButton active={tab === "reserve"} onClick={() => setTab("reserve")}>予約</TabButton>
             <TabButton active={tab === "members"} onClick={() => setTab("members")}>会員</TabButton>
-            <TabButton active={tab === "admin"} onClick={() => setTab("admin")}>管理</TabButton>
+            {isAdmin && (
+      <TabButton
+        active={tab === "admin"}
+        onClick={() => setTab("admin")} 
+        >
+        管理
+      </TabButton>
+    )}
+
           </div>
         </div>
 
